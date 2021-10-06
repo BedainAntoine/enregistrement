@@ -4,43 +4,56 @@
 </head>
 <body>
     
+<h1>Inscription<h1>
+   
+    <form method="post" action="">
+        <p>Nom</p>
+        <input type="text" name="nom">
+        <p>Prenom</p>
+        <input type="text" name="prenom">
+        <p>Age</p>
+        <input type="text" name="age">
+        <p>Ville</p>
+        <input type="text" name="ville">
+        <p>Telephone</p>
+        <input type="text" name="telephone">
+        <p>adresseMail</p>
+        <input type="email" name="adresseMail">
+        <p>groupe</p>
+        <input type="text" name="groupe">
+        <p>Mot de passe</p>
+        <input type="password" name="mdp">
+        <input type="submit" name="submit" value="Valider">
+   
+    </form>
+
 <?php
     /* page: inscription.php */
 //connexion à la base de données:
 require('../config.php');
 
+$bdd = new PDO('mysql:host=localhost;dbname=workshop;charset=utf8', 'bitnami', 'mdpdebian');
 //traitement du formulaire:
-if(isset($_REQUEST['adresseMail'],$_REQUEST['mdp'])){
-   $adresseMail = htmlspecialchars(trim($_POST['adresseMail']));
-   $mdp = htmlspecialchars(trim($_POST['mdp']));
-   $prenom = htmlspecialchars(trim($_POST['prenom']));
+    if (isset($_POST['submit']))
+    {
+    
    $nom = htmlspecialchars(trim($_POST['nom']));
+   $prenom = htmlspecialchars(trim($_POST['prenom']));
    $age = htmlspecialchars(trim($_POST['age']));
+   $ville = htmlspecialchars(trim($_POST['ville']));
    $telephone = htmlspecialchars(trim($_POST['telephone']));
+   $adresseMail = htmlspecialchars(trim($_POST['adresseMail']));
+   $groupe = htmlspecialchars(trim($_POST['groupe']));
+   $mdp = htmlspecialchars(trim($_POST['mdp']));
+   $sexe = htmlspecialchars(trim($_POST['sexe'])); 
+   
+   if($adresseMail && $mdp && $nom && $prenom && $age && $telephone){
 
-   $query = "INSERT INTO utilisateur (id, adresseMail, prenom, nom, age, telephone, mdp) VALUES ('','$adresseMail', '$prenom', '$nom', '$age', '$telephone', '".hash('sha256', $mdp)."')";
-
-   $res = mysqli_query($bdd, $query);
-   if($res){
-       echo "<div>
-            <h3> Vous etes inscrit avec succès </h3>
-            <p>Clique <a href='../Connexion/connexion.php'> ici pour te connecter akhy</a></p></div> "
+    $query = "INSERT INTO utilisateur VALUES ('', '$nom', '$prenom',  '$age', '$ville', '$telephone', '$adresseMail', '$groupe', '".hash('sha256', $mdp)."', '$sexe')";
+    $res = $bdd->query($query);
    }
-}else{
-    ?>
-    <form action="" method="post">
-    <h1>Inscription</h1>
-    <input type="text" name="email" placeholder="Email" required />
-    <input type="password" name="mdp" placeholder="Mot de passe" required />
-    <input type="text" name="prenom" placeholder="Prenom" required />
-    <input type="text" name="nom" placeholder="Nom" required />
-    <input type="text" name="telephone" placeholder="Telephone" required />
-    <input type="text" name="age" placeholder="Age" required />
-
-    <input type="submit" name="submit" value="S'inscrire"/>
-    <p>Vous êtes éjà inscrit? <a href="../Connexion/connexion.php">Connectez-vous ici</a></p>
-</form>
-<?php } ?>
+}else echo "C'est non";
+ ?>
 </body>
 </html>
 
