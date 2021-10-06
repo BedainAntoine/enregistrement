@@ -35,55 +35,69 @@
 			</div>
 		</header>
 	</section>
-    
-<?php
-    /* page: inscription.php */
-//connexion à la base de données:
-define('DB_SERVER', 'localhost');
-define('DB_USERNAME', 'bitnami');
-define('DB_PASSWORD', 'mdpdebian');
-define('DB_NAME', 'workshop');
 
-$bdd = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
 
-if($bdd === false){
-    die("ERREUR : Impossible de se connecter. " . mysqli_connect_error());
-}
 
-$sql= 'INSERT INTO adresse SET adresse='".$_POST['adresse']."'"';
-//traitement du formulaire:
-if(isset($_REQUEST['adresseMail'],$_REQUEST['mdp'])){
-   $adresseMail = mysqli_real_escape_string($bdd, $adresseMail);
-   $mdp = mysqli_real_escape_string($bdd, $mdp);
-   $prenom = mysqli_real_escape_string($bdd,$prenom);
-   $nom = mysqli_real_escape_string($bdd, $nom);
-   $age = mysqli_real_escape_string($bdd, $age);
-   $telephone = mysqli_real_escape_string($bdd, $telephone);
+	<section id="Contact">
+		<div id="ancre-contact" class="shape">
+			<div class="contact-header">
+				<h1>Formulaire d'inscription</h1>
+			</div>
+			<div class="Form">
+				<form method="POST">
+					<label>Votre nom :</label>
+					<div class="inp">
+						<input type="text" spellcheck="true" required="true" name="nom">
+					</div>
+					<label>Votre prénom :</label>
+					<div class="inp">
+						<input type="text" spellcheck="true" required="true" name="prenom">
+					</div>
+					<label> Êtes-vous : </label>
+                    <div class="inp">
+                        <select name="sexe" required="true">
+                            <option value="femme">Une femme</option>
+                            <option value="homme">Un homme</option>
+                            <option value="autre">Autre</option>
+                        </select>
+                    </div>
+					<label>Votre âge :</label>
+					<div class="inp">
+						<input type="text" spellcheck="true" required="true" name="age">
+					</div>
+					<label>Votre numéro de téléphone :</label>
+					<div class="inp">
+						<input type="text" spellcheck="true" required="true" name="telephone">
+					</div>
+					<label>Votre adresse email :</label>
+					<div class="inp">
+						<input type="email" spellcheck="true" required="true" name="adresseMail">
+					</div>
+					<label>Votre ville :</label>
+					<div class="inp">
+						<input type="text" spellcheck="true" required="true" name="ville">
+					</div>
+					<label>Votre mot de passe :</label>
+					<div class="inp">
+						<input type="password" spellcheck="true" required="true" name="mdp">
+					</div>
+					<label>Êtes-vous ?</label>
+					<div class="inp">
+						<select name="groupe">
+							<option valeur="membre">En situation de handicap</option>
+							<option valeur="logement">Un proprietaire</option>
+							<option valeur="formation">Un formateur</option>
+						</select>
+					</div>
+					<div class="btn">
+						<input type="submit" a href="Dyscovery.php" value="Je m'inscris !">
+					</div>
+				</form>
+			</div>
+		</div>
+	</section>
 
-   $query = "INSERT INTO utilisateur (id, adresseMail, prenom, nom, age, telephone, mdp) VALUES ('','$adresseMail', '$prenom', '$nom', '$age', '$telephone', '".hash('sha256', $mdp)."')";
-
-   $res = mysqli_query($bdd, $query);
-   if($res){
-       echo "<div>
-            <h3> Vous etes inscrit avec succès </h3>
-            <p>Clique <a href='../Connexion/connexion.php'> ici pour te connecter akhy</a></p></div> "
-   }
-}else{
-    ?>
-    <form action="" method="post">
-    <h1>Inscription</h1>
-    <input type="text" name="email" placeholder="Email" required />
-    <input type="password" name="mdp" placeholder="Mot de passe" required />
-    <input type="text" name="prenom" placeholder="Prenom" required />
-    <input type="text" name="nom" placeholder="Nom" required />
-    <input type="text" name="telephone" placeholder="Telephone" required />
-    <input type="text" name="age" placeholder="Age" required />
-
-    <input type="submit" name="submit" value="S'inscrire"/>
-    <p>Vous êtes éjà inscrit? <a href="connexion.php">Connectez-vous ici</a></p>
-</form>
-<?php } ?>
-<footer>
+	<footer>
 		<div class="shape">
 			<div class="flex">
 				<div class="flexbox">
@@ -108,7 +122,7 @@ if(isset($_REQUEST['adresseMail'],$_REQUEST['mdp'])){
 					</ul>
 				</div>
 
-                <div class="flexbox">
+				<div class="flexbox">
 					<h3>Quick Links</h3>
 					<ul>
 						<li><a href="#"><i class="fa fa-chevron-right"></i> video gallery</a></li>
@@ -159,7 +173,50 @@ if(isset($_REQUEST['adresseMail'],$_REQUEST['mdp'])){
 			</div>
 			<p>Copyright &copy; 2019 www.helpDysWorld.com all right reserved || Design By <span
 					style="color: #e81f6b;">Qaddouri Yahya</span></p>
-		</div> 
-</footer>
+		</div>
+
+        <?php
+    
+    /* page: inscription.php */
+//connexion à la base de données:
+$BD_serveur     = "localhost";
+$BD_utilisateur = "bitnami";
+$BD_motDePasse  = "mdpdebian";
+$BD_base        = "workshop";
+
+$mysqli = new PDO('mysql:host=localhost;dbname=workshop;charset=utf8', 'bitnami', 'mdpdebian');
+
+@mysqli_connect($BD_serveur, $BD_utilisateur, $BD_motDePasse)
+    or die("Impossible de se connecter au serveur de bases de données.");
+@mysqli_select_db($BD_base)
+    or die("Impossible de se connecter à la base de données.");//fichier de log
+ 
+	//traitement du formulaire:
+	if(isset($_POST['adresseMail'],$_POST['mdp'],$_POST['sexe'],$_POST['prenom'],$_POST['nom'],$_POST['age'],$_POST['groupe'], $_POST['telephone'] )){
+		if(empty($_POST['adresseMail'])){
+			echo "Le champ adresse mail est vide.";
+		} elseif(!preg_match("^[a-z0-9]+([-._]?[a-z0-9]+)*+@?[a-z0-9]+([-._]?[a-z0-9]+)",$_POST['adresseMail'])){
+			echo "Le format de l'adresse mail ne semble pas conforme";
+		} elseif(empty($_POST['mdp'])){
+			echo "Le champ mot de passe est vide.";
+		} elseif(empty($_POST['nom'])){
+			echo "Le champ nom est vide.";
+		} elseif(empty($_POST['prenom'])){
+			echo "Le champ prenom est vide.";
+		} elseif(empty($_POST['telephone'])){
+			echo "Le champ telephone est vide.";
+		}
+		} elseif(mysqli_num_rows(mysqli_query($mysqli,"SELECT * FROM utilisateur WHERE adresseMail='".$_POST['adresseMail']."'"))==1){
+			echo "Désolé, cette adresse email est déjà utilisée.";
+		} else {
+			if(!mysqli_query($mysqli, "INSERT INTO utilisateur SET adresseMail='".$_POST['adresseMail']."', mdp='".md5($_POST['mdp'])."', sexe='".$_POST['sexe']."', prenom='".$_POST['prenom']."', nom='".$_POST['nom']."', age='".$_POST['age']."', groupe='".$_POST['groupe']."', telephone='".$_POST['telephone']."'")){
+				echo "Une erreur s'est produite: ";//.mysqli_error($mysqli);
+			} else {
+				echo "Vous êtes inscrit avec succès!";
+			}
+		}
+		?>
+	</footer>
 </body>
+
 </html>
